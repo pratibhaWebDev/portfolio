@@ -3,8 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pratibha Yadav — Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Pratibha Yadav — Full Stack Developer Portfolio</title>
+<meta name="description" content="Portfolio of Pratibha Yadav, a Full Stack Developer specializing in Next.js, NestJS, and PostgreSQL. Explore my enterprise company projects, personal work, and technical expertise.">
+<meta name="keywords" content="Pratibha Yadav, Full Stack Developer, Next.js, NestJS, PostgreSQL, React, Node.js, Web Developer Portfolio, System Design, API Performance">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://github.com/pratibhaWebDev">
+<meta property="og:title" content="Pratibha Yadav — Full Stack Developer Portfolio">
+<meta property="og:description" content="Portfolio of Pratibha Yadav, a Full Stack Developer specializing in Next.js, NestJS, and PostgreSQL. Explore my enterprise company projects and technical expertise.">
+<meta property="og:image" content="https://github.com/pratibhaWebDev/portfolio/raw/main/screenshot.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://github.com/pratibhaWebDev">
+<meta property="twitter:title" content="Pratibha Yadav — Full Stack Developer Portfolio">
+<meta property="twitter:description" content="Portfolio of Pratibha Yadav, a Full Stack Developer specializing in Next.js, NestJS, and PostgreSQL. Explore my enterprise company projects and technical expertise.">
+<meta property="twitter:image" content="https://github.com/pratibhaWebDev/portfolio/raw/main/screenshot.png">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -16,8 +33,8 @@
 --dark-card:#0a1628;
 --text-primary:#e8f4fd;
 --text-muted:#6b8cae;
---font-display:'Syne',sans-serif;
---font-mono:'Space Mono',monospace;
+--font-display:'Outfit',sans-serif;
+--font-mono:'JetBrains Mono',monospace;
 }
 html{scroll-behavior:smooth;overflow-x:hidden}
 body{background:var(--dark-bg);color:var(--text-primary);font-family:var(--font-display);overflow-x:hidden;cursor:none}
@@ -48,6 +65,8 @@ section{position:relative;z-index:1;padding:6rem 4rem}
 @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.5)}}
 .hero-name{font-size:clamp(2.5rem,6vw,5rem);font-weight:800;line-height:1;margin-bottom:0.5rem;background:linear-gradient(135deg,#fff 0%,var(--neon-blue) 50%,var(--neon-purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero-title{font-family:var(--font-mono);font-size:clamp(0.75rem,1.5vw,1rem);color:var(--neon-purple);margin-bottom:1.5rem;letter-spacing:1px}
+.typewriter-cursor{display:inline-block;color:var(--neon-blue);animation:blink-cursor 0.75s step-end infinite;margin-left:2px}
+@keyframes blink-cursor{0%,100%{opacity:1}50%{opacity:0}}
 .hero-tagline{font-size:1.1rem;color:var(--text-muted);line-height:1.7;margin-bottom:2.5rem;max-width:500px}
 .hero-tagline span{color:var(--text-primary)}
 .hero-ctas{display:flex;gap:1rem;flex-wrap:wrap}
@@ -152,6 +171,9 @@ section{position:relative;z-index:1;padding:6rem 4rem}
 .contact-links{display:flex;flex-direction:column;gap:1rem}
 .contact-link{display:flex;align-items:center;gap:1rem;padding:0.8rem 1rem;background:var(--dark-card);border:1px solid rgba(0,212,255,0.1);border-radius:8px;color:var(--text-muted);text-decoration:none;transition:all 0.3s}
 .contact-link:hover{border-color:var(--neon-blue);color:var(--neon-blue);transform:translateX(5px)}
+.contact-link.leetcode-highlight{border-color:rgba(255,161,22,0.3);box-shadow:0 0 15px rgba(255,161,22,0.1)}
+.contact-link.leetcode-highlight .contact-link-icon{background:rgba(255,161,22,0.15);color:#ffa116}
+.contact-link.leetcode-highlight:hover{border-color:#ffa116;color:#ffa116;box-shadow:0 0 25px rgba(255,161,22,0.3);transform:translateX(5px)}
 .contact-link-icon{width:36px;height:36px;background:rgba(0,212,255,0.1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1rem}
 .contact-form{background:var(--dark-card);border:1px solid rgba(0,212,255,0.1);border-radius:16px;padding:2rem}
 .form-group{margin-bottom:1.2rem}
@@ -253,7 +275,7 @@ footer{text-align:center;padding:2rem;border-top:1px solid rgba(0,212,255,0.1);f
       Available for opportunities
     </div>
     <h1 class="hero-name">Pratibha<br>Yadav</h1>
-    <p class="hero-title">Full Stack Developer &nbsp;|&nbsp; MERN Stack &nbsp;|&nbsp; AI-driven Development</p>
+    <p class="hero-title">Full Stack Developer &nbsp;|&nbsp; <span id="typewriter-text"></span><span class="typewriter-cursor">|</span></p>
     <p class="hero-tagline">
       <span>Building scalable systems,</span> real-time applications, and 
       <span>secure backend architectures</span> that handle the unexpected at scale.
@@ -341,10 +363,10 @@ footer{text-align:center;padding:2rem;border-top:1px solid rgba(0,212,255,0.1);f
   <div class="skills-legend fade-up">
     <div class="skill-group">
       <div class="skill-group-title">⚛️ Frontend</div>
+      <span class="skill-tag">Next.js</span>
       <span class="skill-tag">React.js</span>
       <span class="skill-tag">Redux</span>
       <span class="skill-tag">Tailwind CSS</span>
-      <span class="skill-tag">Next.js</span>
     </div>
     <div class="skill-group">
       <div class="skill-group-title">📱 Mobile</div>
@@ -353,14 +375,15 @@ footer{text-align:center;padding:2rem;border-top:1px solid rgba(0,212,255,0.1);f
     </div>
     <div class="skill-group">
       <div class="skill-group-title">⚙️ Backend</div>
+      <span class="skill-tag">NestJS</span>
       <span class="skill-tag">Node.js</span>
       <span class="skill-tag">Express.js</span>
       <span class="skill-tag">REST APIs</span>
       <span class="skill-tag">JWT</span>
-      <span class="skill-tag">RBAC</span>
     </div>
     <div class="skill-group">
       <div class="skill-group-title">🗄️ Database</div>
+      <span class="skill-tag">PostgreSQL</span>
       <span class="skill-tag">MongoDB</span>
       <span class="skill-tag">MySQL</span>
       <span class="skill-tag">Mongoose</span>
@@ -491,22 +514,22 @@ footer{text-align:center;padding:2rem;border-top:1px solid rgba(0,212,255,0.1);f
   </div>
   <div class="projects-grid fade-up">
 
-    <!-- Bank Transaction System - Featured -->
+    <!-- NextGen E-Commerce - Featured -->
     <div class="project-card" style="grid-column:1/-1">
       <div class="project-card-inner" style="height:340px">
         <div class="project-front project-front-featured" style="height:340px">
-          <div class="project-badge">🚀 Current Project · Featured</div>
-          <h3 class="project-title">Bank Transaction System</h3>
-          <p class="project-desc">A secure backend system for managing bank transactions, ensuring data integrity, authentication, and real-time transaction processing. Built to handle enterprise-scale financial operations with bulletproof reliability.</p>
+          <div class="project-badge">🚀 Personal Project · In Progress</div>
+          <h3 class="project-title">NextGen E-Commerce Platform</h3>
+          <p class="project-desc">A full-featured e-commerce system with secure checkout integrations, real-time order processing pipelines, an interactive product catalog, and an analytical vendor dashboard.</p>
           <div class="tx-viz">
             <canvas id="tx-canvas"></canvas>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div class="project-tech">
-              <span class="tech-tag">Node.js</span>
-              <span class="tech-tag">Express.js</span>
-              <span class="tech-tag">MongoDB</span>
-              <span class="tech-tag">JWT</span>
+              <span class="tech-tag">Next.js</span>
+              <span class="tech-tag">NestJS</span>
+              <span class="tech-tag">PostgreSQL</span>
+              <span class="tech-tag">Stripe</span>
             </div>
             <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted)">Hover to see features →</span>
           </div>
@@ -514,12 +537,12 @@ footer{text-align:center;padding:2rem;border-top:1px solid rgba(0,212,255,0.1);f
         <div class="project-back" style="height:340px">
           <h4>✦ Key Features</h4>
           <ul class="feature-list">
-            <li>Secure transaction APIs with end-to-end encryption and tamper detection</li>
-            <li>JWT-based user authentication with refresh token rotation</li>
-            <li>Complete transaction history tracking with pagination and filters</li>
-            <li>Comprehensive error handling, validation middleware, and rollback support</li>
-            <li>Horizontally scalable architecture designed for microservice extraction</li>
-            <li>Real-time transaction status via WebSocket events</li>
+            <li>Secure cart management, dynamic discount engines, and Stripe payment flows</li>
+            <li>Real-time order status updates and notifications via WebSockets</li>
+            <li>Relational database schema optimized in PostgreSQL with transactional integrity</li>
+            <li>Advanced catalog indexing supporting multi-parameter filtering and full-text search</li>
+            <li>Comprehensive seller telemetry dashboard with live sales metrics</li>
+            <li>Fully responsive and custom-tailored UX design using modern CSS transitions</li>
           </ul>
           <div style="margin-top:auto;padding-top:1rem;border-top:1px solid rgba(168,85,247,0.2);display:flex;gap:1rem">
             <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--neon-purple)">In active development</span>
@@ -528,54 +551,54 @@ footer{text-align:center;padding:2rem;border-top:1px solid rgba(0,212,255,0.1);f
       </div>
     </div>
 
-    <!-- DevTrackr -->
+    <!-- Enterprise CMS -->
     <div class="project-card">
       <div class="project-card-inner" style="height:320px">
         <div class="project-front" style="height:320px">
-          <div class="project-badge" style="background:rgba(168,85,247,0.15);border-color:var(--neon-purple);color:var(--neon-purple)">📊 Open Source</div>
-          <h3 class="project-title">DevTrackr – Web Dev Tracker</h3>
-          <p class="project-desc">A full-featured task management and progress tracking application for developers. Category filtering across DSA, frontend, and backend domains with progress analytics.</p>
+          <div class="project-badge" style="background:rgba(168,85,247,0.15);border-color:var(--neon-purple);color:var(--neon-purple)">🏢 Company Project</div>
+          <h3 class="project-title">Enterprise CMS (Content Management)</h3>
+          <p class="project-desc">A highly scalable content management system built for high-performance publishing, featuring a custom block editor, lightning-fast static page generation, and SEO performance optimization.</p>
           <div class="project-tech" style="margin-top:auto">
             <span class="tech-tag">Next.js</span>
-            <span class="tech-tag">Node.js</span>
-            <span class="tech-tag">MongoDB</span>
+            <span class="tech-tag">NestJS</span>
+            <span class="tech-tag">PostgreSQL</span>
           </div>
         </div>
         <div class="project-back" style="height:320px">
-          <h4>✦ Features</h4>
+          <h4>✦ Features & Impact</h4>
           <ul class="feature-list">
-            <li>Kanban-style task management with drag-and-drop</li>
-            <li>Category filtering: DSA, Frontend, Backend</li>
-            <li>Progress analytics with streak tracking</li>
-            <li>Goal-setting with deadline reminders</li>
-            <li>Built with Next.js for server-side rendering</li>
+            <li>Dynamic page rendering with modular block editor support</li>
+            <li>Static Site Generation (SSG) for sub-second page loads</li>
+            <li>Robust RBAC permissions for authors, editors, and admins</li>
+            <li>Integrated media asset library with auto-image optimization</li>
+            <li>Comprehensive SEO tools and automated sitemap generation</li>
           </ul>
         </div>
       </div>
     </div>
 
-    <!-- CRM/HRM -->
+    <!-- ERP, CRM & HRM Systems -->
     <div class="project-card">
       <div class="project-card-inner" style="height:320px">
         <div class="project-front" style="height:320px">
-          <div class="project-badge" style="background:rgba(0,255,136,0.1);border-color:#00ff88;color:#00ff88">🏢 Enterprise</div>
-          <h3 class="project-title">CRM & HRM Systems</h3>
-          <p class="project-desc">Production enterprise systems handling real-time dashboards, role-based access control, and high-volume daily transaction processing for business-critical operations.</p>
+          <div class="project-badge" style="background:rgba(0,255,136,0.1);border-color:#00ff88;color:#00ff88">🏢 Company Project</div>
+          <h3 class="project-title">ERP, CRM & HRM Suite</h3>
+          <p class="project-desc">Production enterprise resource planning suite handling real-time management dashboards, automated payroll workflows, and high-volume transaction tracking.</p>
           <div class="project-tech" style="margin-top:auto">
             <span class="tech-tag">React.js</span>
+            <span class="tech-tag">NestJS</span>
+            <span class="tech-tag">PostgreSQL</span>
             <span class="tech-tag">Node.js</span>
-            <span class="tech-tag">MongoDB</span>
-            <span class="tech-tag">RBAC</span>
           </div>
         </div>
         <div class="project-back" style="height:320px">
-          <h4>✦ Impact</h4>
+          <h4>✦ Impact & Features</h4>
           <ul class="feature-list">
-            <li>10,000+ daily transactions processed without failures</li>
-            <li>Role-based access for admin, manager, employee tiers</li>
-            <li>Real-time dashboards with live WebSocket updates</li>
-            <li>30% improvement in team workflow efficiency</li>
-            <li>Audit logs for complete activity traceability</li>
+            <li>10,000+ daily business transactions processed securely</li>
+            <li>Interactive executive dashboards with live resource metrics</li>
+            <li>Automated attendance, leave management, and payroll reports</li>
+            <li>30% improvement in team operational workflow velocity</li>
+            <li>Optimized database indexing and queries on high-volume tables</li>
           </ul>
         </div>
       </div>
@@ -617,6 +640,13 @@ footer{text-align:center;padding:2rem;border-top:1px solid rgba(0,212,255,0.1);f
             <div style="font-size:0.75rem;color:var(--text-muted)">GitHub</div>
           </div>
         </a>
+        <a href="https://leetcode.com/u/pratibhawebdev/" target="_blank" class="contact-link leetcode-highlight">
+          <div class="contact-link-icon">💻</div>
+          <div>
+            <div style="color:var(--text-primary);font-size:0.85rem;font-weight:600">leetcode.com/u/pratibhawebdev</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">LeetCode</div>
+          </div>
+        </a>
         <a href="tel:+916307531976" class="contact-link">
           <div class="contact-link-icon">📱</div>
           <div>
@@ -656,7 +686,7 @@ footer{text-align:center;padding:2rem;border-top:1px solid rgba(0,212,255,0.1);f
   <p style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted)">
     Designed & Built by <span style="color:var(--neon-blue)">Pratibha Yadav</span> · Full Stack Developer · 2026
   </p>
-  <p style="margin-top:0.5rem;font-size:0.65rem;color:rgba(107,140,174,0.5)">Built with React · Node.js · MongoDB · ❤️</p>
+  <p style="margin-top:0.5rem;font-size:0.65rem;color:rgba(107,140,174,0.5)">Built with Next.js · NestJS · PostgreSQL · ❤️</p>
 </footer>
 
 <script>
@@ -797,7 +827,7 @@ function drawDesk(){
   const codeLines=['> node server.js','  Listening on :3000','> POST /api/txn','  ✓ JWT verified','  ✓ Balance checked','  200 OK — 42ms'];
   codeLines.forEach((line,i)=>{
     const visible=Math.floor((deskT*2+i*0.5)%8)===i%6;
-    dctx.font='10px Space Mono, monospace';
+    dctx.font='10px JetBrains Mono, monospace';
     const hue=line.includes('✓')?'#00ff88':line.includes('POST')?'#a855f7':'rgba(0,212,255,0.8)';
     dctx.fillStyle=i===Math.floor(deskT*1.5)%6?'rgba(0,212,255,1)':hue;
     dctx.fillText(line,cx-115,monY-70+i*22);
@@ -816,7 +846,7 @@ function drawDesk(){
   dctx.restore();
   
   // Floating data bubbles
-  const bubbles=[{x:-150,y:-40,label:'MongoDB',color:'#00ed64'},{x:150,y:-60,label:'JWT',color:'#a855f7'},{x:-160,y:40,label:'Express',color:'#00d4ff'}];
+  const bubbles=[{x:-150,y:-40,label:'PostgreSQL',color:'#336791'},{x:150,y:-60,label:'NestJS',color:'#e0234e'},{x:-160,y:40,label:'Next.js',color:'#ffffff'}];
   bubbles.forEach((b,i)=>{
     const bx=cx+b.x+Math.sin(deskT+i*1.5)*8;
     const by=cy+b.y+Math.cos(deskT*0.8+i)*6;
@@ -832,7 +862,7 @@ function drawDesk(){
     roundRect(dctx,bx-30,by-14,60,28,6);
     dctx.fill();dctx.stroke();
     dctx.fillStyle=b.color;
-    dctx.font='bold 9px Space Mono, monospace';
+    dctx.font='bold 9px JetBrains Mono, monospace';
     dctx.textAlign='center';
     dctx.fillText(b.label,bx,by+4);
     dctx.restore();
@@ -849,7 +879,7 @@ const sctx=sc.getContext('2d');
 function resizeSphere(){sc.width=sc.offsetWidth;sc.height=sc.offsetHeight}
 resizeSphere();
 window.addEventListener('resize',resizeSphere);
-const skills=['React.js','Node.js','MongoDB','Express','Redux','JWT','MySQL','REST API','Tailwind','Git','RBAC','Next.js','Postman','AI Tools','TypeScript','React Native','Expo'];
+const skills=['Next.js','NestJS','PostgreSQL','React.js','Node.js','MongoDB','Express','Redux','JWT','MySQL','REST API','Tailwind','Git','RBAC','Postman','AI Tools','TypeScript','React Native','Expo'];
 let sphereT=0,sRotX=0.3,sRotY=0;
 function project3D(x,y,z,cx,cy){const fov=300;const scale=fov/(fov+z);return{sx:cx+x*scale,sy:cy+y*scale,scale:scale}}
 function drawSphere(){
@@ -872,7 +902,7 @@ function drawSphere(){
     const a=0.2+0.8*(p.z+r)/(2*r);
     sctx.save();
     sctx.globalAlpha=a;
-    sctx.font=`${Math.floor(10*scale+6)}px Space Mono, monospace`;
+    sctx.font=`${Math.floor(10*scale+6)}px JetBrains Mono, monospace`;
     sctx.fillStyle=a>0.7?'rgba(0,212,255,1)':'rgba(168,85,247,0.8)';
     sctx.textAlign='center';
     sctx.fillText(p.label,sx,sy);
@@ -919,7 +949,7 @@ function drawTx(){
   });
   // Labels
   const txLabels=['$2,500','$890','$15K','$340','$7,200'];
-  tctx.font='8px Space Mono, monospace';
+  tctx.font='8px JetBrains Mono, monospace';
   txLabels.forEach((l,i)=>{
     const lx=(0.1+i*0.2)*w;
     const ly=h/2+Math.sin(lx*0.04+txT*3)*8-10;
@@ -962,6 +992,36 @@ const counterObserver=new IntersectionObserver(entries=>{
 const statsSection=document.getElementById('achievements');
 if(statsSection)counterObserver.observe(statsSection);
 
+// TYPEWRITER ANIMATION
+(function(){
+  const phrases = [
+    'Next.js \u00b7 NestJS \u00b7 PostgreSQL',
+    'AI-driven Development',
+    'Full Stack Architect',
+    'Backend Performance Expert',
+    'React \u00b7 Node.js \u00b7 REST APIs'
+  ];
+  const el = document.getElementById('typewriter-text');
+  if (!el) return;
+  let phraseIdx = 0, charIdx = 0, deleting = false;
+  const typeSpeed = 75, deleteSpeed = 40, pauseAfterType = 2200, pauseAfterDelete = 400;
+  function tick() {
+    const current = phrases[phraseIdx];
+    if (!deleting) {
+      el.textContent = current.slice(0, ++charIdx);
+      if (charIdx === current.length) { deleting = true; setTimeout(tick, pauseAfterType); return; }
+    } else {
+      el.textContent = current.slice(0, --charIdx);
+      if (charIdx === 0) {
+        deleting = false;
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        setTimeout(tick, pauseAfterDelete); return;
+      }
+    }
+    setTimeout(tick, deleting ? deleteSpeed : typeSpeed);
+  }
+  setTimeout(tick, 800);
+})();
 
 </script>
 </body>
