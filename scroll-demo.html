@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Antigravity Scroll Animation Engine — Interactive Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0C0D0E;
+      --bg-raised: #141618;
+      --rule: rgba(255, 255, 255, 0.08);
+      --ink: #EDEAE3;
+      --ink-dim: #8B877E;
+      --amber: #E29B52;
+      --teal: #3DD68C;
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-mono);
+    }
+
+    body {
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Floating Debug HUD */
+    #hud {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(20, 22, 24, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 0.8rem 1rem;
+      font-size: 0.72rem;
+      z-index: 999;
+      pointer-events: none;
+      color: var(--amber);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    #hud span { color: var(--ink); }
+
+    /* Layout Shell */
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 6rem 0;
+      border-bottom: 1px solid var(--rule);
+      position: relative;
+    }
+
+    .sec-tag {
+      font-size: 0.75rem;
+      color: var(--amber);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 500;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+
+    p {
+      color: var(--ink-dim);
+      font-size: 0.95rem;
+      max-width: 38rem;
+    }
+
+    /* 1. HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .hero-box {
+      background: var(--bg-raised);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 2.5rem;
+      margin-top: 2rem;
+      max-width: 540px;
+      /* will-change informs browser to optimize transform */
+      will-change: transform;
+    }
+
+    /* 2. ABOUT (Progressive Opacity & Scale) */
+    .about-quote {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      color: #fff;
+      line-height: 1.4;
+      margin-bottom: 2rem;
+      will-change: transform, opacity;
+    }
+
+    /* 3. SKILLS (Staggered Floating Cards) */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      margin-top: 2rem;
+    }
+
+    .skill-card {
+      background: var(--bg-raised);
+      border: 1px solid var(--rule);
+      padding: 1.8rem;
+      border-radius: 6px;
+      will-change: transform;
+    }
+
+    .skill-card h3 {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    /* 4. PROJECTS (Multi-Layer Parallax) */
+    .project-card {
+      background: var(--bg-raised);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      margin-top: 2rem;
+      width: 100%;
+    }
+
+    .project-bg-accent {
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(226,155,82,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    /* 5. CONTACT */
+    .contact-box {
+      border: 1px solid var(--amber);
+      background: rgba(226,155,82,0.03);
+      padding: 3rem;
+      border-radius: 8px;
+      width: 100%;
+      text-align: center;
+      will-change: transform, opacity;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Telemetry / Scroll Inspector -->
+  <div id="hud">
+    <div>Scroll Y: <span id="hud-scroll">0px</span></div>
+    <div>Velocity: <span id="hud-velocity">0.0</span></div>
+    <div>Active Section: <span id="hud-section">hero</span></div>
+  </div>
+
+  <!-- 1. HERO -->
+  <section id="hero">
+    <div class="wrap">
+      <div class="sec-tag" data-parallax="0.1">// 01 — Antigravity Feel</div>
+      <h1 class="hero-title" style="font-family:var(--font-display);font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.05;color:#fff" data-parallax="0.2">
+        Weightless Motion <br><em style="color:var(--amber);font-style:italic">Connected to Scroll.</em>
+      </h1>
+      <div class="hero-box" data-parallax="-0.15">
+        <div style="font-size:0.75rem;color:var(--teal);margin-bottom:0.5rem">● PARALLAX FLOAT CARD (speed = -0.15)</div>
+        <p>As you scroll down, this card counter-glides slightly upward faster than normal elements, giving the psychological sensation of weightlessness and depth.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ABOUT -->
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-tag">// 02 — Progress-Linked Typography</div>
+      <div class="about-quote" id="scroll-scale-text">
+        "Physics in web design isn't about simulating gravity. It's about giving users instantaneous, proportional tactile feedback with zero jank."
+      </div>
+      <p id="about-copy">
+        When scroll progress reaches this section, elements compute their normalized progress (0.0 to 1.0) and dynamically map it to opacity and scale.
+      </p>
+    </div>
+  </section>
+
+  <!-- 3. SKILLS -->
+  <section id="skills">
+    <div class="wrap" style="width:100%">
+      <div class="sec-tag">// 03 — Multi-Speed Stagger</div>
+      <h2>Engineered for Flow</h2>
+      <div class="skills-grid">
+        <div class="skill-card" data-parallax="-0.08">
+          <h3>Architecture</h3>
+          <p>Speed factor: -0.08. Glides gently ahead of the page flow.</p>
+        </div>
+        <div class="skill-card" data-parallax="-0.18">
+          <h3 style="color:var(--amber)">Distributed Systems</h3>
+          <p>Speed factor: -0.18. Faster float creating layered visual separation.</p>
+        </div>
+        <div class="skill-card" data-parallax="-0.04">
+          <h3>AI Engineering</h3>
+          <p>Speed factor: -0.04. Subtly anchored closer to base scroll.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. PROJECTS -->
+  <section id="projects">
+    <div class="wrap" style="width:100%">
+      <div class="sec-tag">// 04 — Dual-Layer Depth</div>
+      <h2>NextGen Platform</h2>
+      <div class="project-card" id="project-card">
+        <div class="project-bg-accent" id="project-glow"></div>
+        <div style="position:relative;z-index:1">
+          <h3 style="font-size:1.6rem;color:#fff;margin-bottom:0.5rem">Full Stack Transaction Engine</h3>
+          <p style="margin-bottom:1.5rem">Notice how the amber ambient glow in the background shifts at a different rate than the foreground text card. This creates optical parallax 3D depth without Canvas or WebGL.</p>
+          <div style="font-size:0.75rem;color:var(--amber)">[SCROLL PROGRESS INTERPOLATION ACTIVE]</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. CONTACT -->
+  <section id="contact">
+    <div class="wrap" style="width:100%">
+      <div class="contact-box" id="contact-box">
+        <div class="sec-tag" style="color:var(--amber)">// 05 — Exit & Arrival</div>
+        <h2 style="margin-bottom:1rem">Let's Build Something Exceptional</h2>
+        <p style="margin:0 auto 1.5rem">Interpolated using requestAnimationFrame and linear interpolation (Lerp).</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /**
+     * =========================================================================
+     * ANTIGRAVITY SCROLL ENGINE (VANILLA JAVASCRIPT)
+     * =========================================================================
+     *
+     * Architectural Concepts:
+     * 1. Passive Scroll Listener: Updates only the 'target' state.
+     * 2. LERP (Linear Interpolation): Smooths sharp scroll jumps into buttery physics.
+     * 3. requestAnimationFrame (rAF) Loop: Only renders when the screen refreshes.
+     * 4. Normalized Progress (0.0 -> 1.0): Converts viewport positions to unit progress.
+     */
+
+    // --- State Management ---
+    let targetScrollY = 0;
+    let currentScrollY = 0;
+    let lastScrollY = 0;
+    let scrollVelocity = 0;
+    let isRunning = false;
+
+    // Elements
+    const hudScroll = document.getElementById('hud-scroll');
+    const hudVelocity = document.getElementById('hud-velocity');
+    const hudSection = document.getElementById('hud-section');
+    const parallaxElements = document.querySelectorAll('[data-parallax]');
+    const scaleText = document.getElementById('scroll-scale-text');
+    const projectGlow = document.getElementById('project-glow');
+    const contactBox = document.getElementById('contact-box');
+    const sections = document.querySelectorAll('section');
+
+    /**
+     * Helper: Linear Interpolation (LERP)
+     * Formula: current + (target - current) * factor
+     * When factor is e.g. 0.1, current smoothly moves 10% towards target every frame.
+     */
+    function lerp(start, end, factor) {
+      return start + (end - start) * factor;
+    }
+
+    /**
+     * Helper: Clamp
+     * Keeps value within [min, max] range.
+     */
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(val, max));
+    }
+
+    /**
+     * Helper: Normalized Viewport Progress
+     * Returns 0.0 when top of element enters bottom of viewport,
+     * Returns 1.0 when bottom of element leaves top of viewport.
+     */
+    function getElementProgress(el) {
+      const rect = el.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const totalDistance = windowHeight + rect.height;
+      const currentDistance = windowHeight - rect.top;
+      return clamp(currentDistance / totalDistance, 0, 1);
+    }
+
+    // --- Passive Scroll Listener ---
+    // Do NOT run expensive DOM changes inside here! Only record scrollY.
+    window.addEventListener('scroll', () => {
+      targetScrollY = window.scrollY || window.pageYOffset;
+      if (!isRunning) {
+        isRunning = true;
+        requestAnimationFrame(updateLoop);
+      }
+    }, { passive: true });
+
+    /**
+     * Main Animation Frame Loop
+     * Runs synchronized with your monitor's refresh rate (60Hz / 120Hz / 144Hz)
+     */
+    function updateLoop() {
+      // 1. Smoothly interpolate current scroll towards target (inertia / weightless feel)
+      currentScrollY = lerp(currentScrollY, targetScrollY, 0.08);
+
+      // 2. Compute current scroll velocity
+      scrollVelocity = Math.abs(currentScrollY - lastScrollY);
+      lastScrollY = currentScrollY;
+
+      // 3. Update HUD Telemetry
+      if (hudScroll) hudScroll.textContent = `${Math.round(currentScrollY)}px`;
+      if (hudVelocity) hudVelocity.textContent = scrollVelocity.toFixed(2);
+
+      // 4. Parallax Floating Elements (Speed multipliers)
+      parallaxElements.forEach(el => {
+        const speed = parseFloat(el.getAttribute('data-parallax')) || 0;
+        // Shift relative to scroll
+        const yOffset = currentScrollY * speed;
+        el.style.transform = `translate3d(0, ${yOffset}px, 0)`;
+      });
+
+      // 5. Section 2: Progress-Linked Typography (Opacity & Scale)
+      if (scaleText) {
+        const progress = getElementProgress(scaleText);
+        // Map progress: Fade in and scale up as it reaches the center of the screen
+        const scale = 0.9 + progress * 0.15; // 0.9 -> 1.05
+        const opacity = clamp((progress - 0.2) / 0.4, 0.2, 1);
+        scaleText.style.transform = `scale(${scale})`;
+        scaleText.style.opacity = opacity;
+      }
+
+      // 6. Section 4: Dual-layer Project Parallax
+      if (projectGlow) {
+        const progress = getElementProgress(projectGlow.parentElement);
+        // Glow moves dynamically with scroll
+        const glowOffset = (progress - 0.5) * 120;
+        projectGlow.style.transform = `translate3d(${glowOffset}px, ${-glowOffset}px, 0)`;
+      }
+
+      // 7. Section 5: Contact Card Scale & Slide
+      if (contactBox) {
+        const progress = getElementProgress(contactBox);
+        const y = (1 - progress) * 60; // slides from 60px down to 0
+        const opacity = clamp(progress * 1.5, 0, 1);
+        contactBox.style.transform = `translate3d(0, ${y}px, 0)`;
+        contactBox.style.opacity = opacity;
+      }
+
+      // 8. Active Section Detection
+      sections.forEach(sec => {
+        const rect = sec.getBoundingClientRect();
+        if (rect.top <= window.innerHeight * 0.4 && rect.bottom >= window.innerHeight * 0.4) {
+          hudSection.textContent = sec.id;
+        }
+      });
+
+      // Continue loop until motion settles below threshold (< 0.05px diff)
+      if (Math.abs(targetScrollY - currentScrollY) > 0.05) {
+        requestAnimationFrame(updateLoop);
+      } else {
+        currentScrollY = targetScrollY;
+        isRunning = false;
+      }
+    }
+
+    // Trigger initial render
+    targetScrollY = window.scrollY;
+    currentScrollY = targetScrollY;
+    requestAnimationFrame(updateLoop);
+  </script>
+</body>
+</html>
