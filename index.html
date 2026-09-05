@@ -218,12 +218,10 @@
 }
 html{scroll-behavior:smooth;background:#0A0D14}
 body{
-  background-color:#0A0D14;
+  background-color:#080A10;
   background-image:
-    radial-gradient(ellipse 95% 65% at 50% -10%, rgba(217,142,63,0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 75% 55% at 90% 25%, rgba(94,156,138,0.13) 0%, transparent 60%),
-    radial-gradient(ellipse 75% 55% at 10% 65%, rgba(217,142,63,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 85% 65% at 70% 95%, rgba(94,156,138,0.12) 0%, transparent 65%);
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(217, 142, 63, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 90%, rgba(94, 156, 138, 0.05) 0%, transparent 50%);
   background-attachment:fixed;
   color:var(--ink);
   font-family:var(--font-mono);
@@ -231,29 +229,20 @@ body{
   line-height:1.6;
   position:relative;
   min-height:100vh;
+  overflow-x:hidden;
 }
 
-/* Ambient Technical Blueprint Grid Overlay */
-body::before{
-  content:'';
+/* Subtle Interactive Constellation Particle Canvas */
+#bg-canvas{
   position:fixed;
-  top:0;left:0;right:0;bottom:0;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
   pointer-events:none;
   z-index:0;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size:40px 40px;
-  mask-image:radial-gradient(ellipse 85% 85% at 50% 50%, #000 45%, transparent 100%);
-  -webkit-mask-image:radial-gradient(ellipse 85% 85% at 50% 50%, #000 45%, transparent 100%);
+  opacity:0.85;
 }
-
-/* Floating Ambient Aurora Orbs */
-.bg-orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;opacity:0.35}
-.orb-amber{width:550px;height:550px;background:radial-gradient(circle,rgba(217,142,63,0.38) 0%,transparent 70%);top:-120px;left:15%;animation:floatOrb1 24s ease-in-out infinite alternate}
-.orb-teal{width:600px;height:600px;background:radial-gradient(circle,rgba(94,156,138,0.30) 0%,transparent 70%);bottom:15%;right:5%;animation:floatOrb2 30s ease-in-out infinite alternate}
-@keyframes floatOrb1{0%{transform:translate3d(0,0,0) scale(1)} 100%{transform:translate3d(80px,60px,0) scale(1.15)}}
-@keyframes floatOrb2{0%{transform:translate3d(0,0,0) scale(1)} 100%{transform:translate3d(-90px,-70px,0) scale(1.1)}}
 
 a{color:inherit}
 img{max-width:100%;display:block}
@@ -646,8 +635,8 @@ footer{text-align:center;padding:2rem;font-size:0.72rem;color:var(--ink-dim)}
 </style>
 </head>
 <body>
-<div class="bg-orb orb-amber"></div>
-<div class="bg-orb orb-teal"></div>
+<!-- Interactive Constellation Particle Canvas -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
 
 <nav id="navbar">
   <div class="nav-progress-bar" id="nav-progress"></div>
@@ -1283,6 +1272,165 @@ const counterObserver=new IntersectionObserver(entries=>{
 },{threshold:0.4});
 const impactSection=document.getElementById('impact');
 if(impactSection)counterObserver.observe(impactSection);
+
+// ---------- INTERACTIVE CONSTELLATION CANVAS ----------
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let particles = [];
+  let animId = null;
+
+  // Track cursor position
+  const mouse = {
+    x: null,
+    y: null,
+    radius: 140
+  };
+
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  window.addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches[0]) {
+      mouse.x = e.touches[0].clientX;
+      mouse.y = e.touches[0].clientY;
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+    initParticles();
+  }
+
+  function initParticles() {
+    particles = [];
+    const baseCount = Math.floor((width * height) / 16000);
+    const count = Math.max(35, Math.min(baseCount, 85));
+
+    for (let i = 0; i < count; i++) {
+      const isAccent = Math.random() < 0.25;
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.45,
+        vy: (Math.random() - 0.5) * 0.45,
+        radius: Math.random() * 1.4 + 0.8,
+        color: isAccent ? 'rgba(217, 142, 63, ' : 'rgba(235, 231, 221, ',
+        baseAlpha: Math.random() * 0.35 + 0.25,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+
+    const len = particles.length;
+    for (let i = 0; i < len; i++) {
+      const p = particles[i];
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < -10) p.x = width + 10;
+      else if (p.x > width + 10) p.x = -10;
+      if (p.y < -10) p.y = height + 10;
+      else if (p.y > height + 10) p.y = -10;
+
+      // Gentle repulsion/interaction with mouse
+      if (mouse.x !== null && mouse.y !== null) {
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < mouse.radius && dist > 0.001) {
+          const force = (1 - dist / mouse.radius) * 0.6;
+          p.x -= (dx / dist) * force * 1.4;
+          p.y -= (dy / dist) * force * 1.4;
+        }
+      }
+
+      p.phase += 0.015;
+      const alphaPulse = p.baseAlpha + Math.sin(p.phase) * 0.1;
+      const finalAlpha = Math.max(0.12, Math.min(alphaPulse, 0.7));
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + finalAlpha + ')';
+      ctx.fill();
+
+      // Constellation lines
+      for (let j = i + 1; j < len; j++) {
+        const p2 = particles[j];
+        const dx = p.x - p2.x;
+        const dy = p.y - p2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 110) {
+          const lineAlpha = (1 - dist / 110) * 0.15;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = `rgba(235, 231, 221, ${lineAlpha})`;
+          ctx.lineWidth = 0.7;
+          ctx.stroke();
+        }
+      }
+
+      // Cursor connection line
+      if (mouse.x !== null && mouse.y !== null) {
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 130) {
+          const mouseLineAlpha = (1 - dist / 130) * 0.25;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(217, 142, 63, ${mouseLineAlpha})`;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+
+    animId = requestAnimationFrame(draw);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (animId) cancelAnimationFrame(animId);
+    } else {
+      animId = requestAnimationFrame(draw);
+    }
+  });
+
+  window.addEventListener('resize', resize);
+  resize();
+  animId = requestAnimationFrame(draw);
+})();
 </script>
 </body>
 </html>
